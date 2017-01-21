@@ -1,0 +1,27 @@
+Thanks for downloading this code. Here is the procedure that gets you started quickly.
+
+Step 1. Download the review corpus + image features of Amazon Clothing data from http://jmcauley.ucsd.edu/data/amazon/. 
+
+
+Step 2. Preprocess the data.
+Note that in the WWW'16 paper, we experimented with two categories (i.e., Men, Women) under this corpus. Here we provide the code (under the directory /tools) to help you get the review corpus + image feature file for each of these categories. 
+
+(1) For review corpus, first use "convert_to_simple.py" to covert the original review corpus to a *simple* form (non-json). Then use the tool "getClothingSubReviews" to get the review corpora for different categories. Finally compress each of them using gzip.
+
+(2) For image features, use the tool "getClothingSubImgFeatures" to get the image feature files directly.
+In each case, you would need the category metadata file named "productMeta_simple.txt.gz", which can be downloaded from https://drive.google.com/file/d/0B9Ck8jw-TZUELVRLMVdJNTRUU0U/view?usp=sharing
+
+
+Step 3. "make" the code.
+
+
+Step 4. Run the binary file "train".
+
+
+
+Have fun!
+- Ruining He
+
+
+docker run -v ~/Development/DSE/capstone/UpsDowns:/mnt/mac  -ti updowns /bin/bash
+
