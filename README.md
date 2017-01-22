@@ -20,7 +20,7 @@ To build the suite, run the `Makefile`, by typing `make` in the project director
 
 ## BMR Model
 
-This is the simple model w/ no image or temporal features. It uses rating data to imply positive feedback (a purchase). Uses the BMR routine to do matrix factorization. 
+This is the simple model w/ no image or temporal features. It uses rating data to imply positive feedback (a purchase). Uses the BMR cost function that is minimized by SGD.
 
 ### Training
 
