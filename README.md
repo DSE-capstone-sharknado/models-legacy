@@ -22,6 +22,8 @@ To build the suite, run the `Makefile`, by typing `make` in the project director
 
 This is the simple model w/ no image or temporal features. It uses rating data to imply positive feedback (a purchase). Uses the BMR cost function that is minimized by SGD.
 
+pairwise Bayesian Personalized Ranking (BPR) loss (Rendle et al., 2009) for ranking. 
+
 ### Training
 
 To train the BMR model, pass in the following args:
