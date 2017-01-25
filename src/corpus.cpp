@@ -55,9 +55,9 @@ void corpus::loadVotes(const char* imgFeatPath, const char* voteFile, int userMi
 			fflush(stderr);
 		}
 
-		if (imgAsins.find(bName) == imgAsins.end()) {
-			continue;
-		}
+    // if (imgAsins.find(bName) == imgAsins.end()) {
+    //   continue;
+    // }
 
 		if (value > 5 or value < 0) { // Ratings should be in the range [0,5]
 			printf("Got bad value of %f\nOther fields were %s %s %lld\n", value, uName.c_str(), bName.c_str(), voteTime);
@@ -99,13 +99,13 @@ void corpus::loadVotes(const char* imgFeatPath, const char* voteFile, int userMi
 			fflush(stderr);
 		}
 
-		if (imgAsins.find(bName) == imgAsins.end()) {
-			continue;
-		}
-
-		if (uCounts[uName] < userMin or bCounts[bName] < itemMin) {
-			continue;
-		}
+    // if (imgAsins.find(bName) == imgAsins.end()) {
+    //   continue;
+    // }
+    //
+    // if (uCounts[uName] < userMin or bCounts[bName] < itemMin) {
+    //   continue;
+    // }
 
 		// new item
 		if (itemIds.find(bName) == itemIds.end()) {

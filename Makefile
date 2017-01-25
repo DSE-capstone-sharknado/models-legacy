@@ -2,6 +2,7 @@ CC = g++
 CFLAGS = -Wall -O3 -fopenmp -Igzstream -Isrc -Isrc/models -std=c++0x
 LDFLAGS = -lgomp -lgzstream -lz -lstdc++ -Lgzstream -larmadillo
 OBJECTS = obj/common.o obj/corpus.o obj/model.o gzstream/gzstream.o obj/tsne.o obj/sptree.o obj/categoryTree.o
+DEL_OBJECT =  obj/common.o obj/corpus.o obj/model.o gzstream/gzstream.o obj/categoryTree.o
 MODELOBJECTS = obj/models/POP.o obj/models/WRMF.o obj/models/BPRMF.o obj/models/TimeBPR.o obj/models/BPRTMF.o obj/models/VBPR.o obj/models/TVBPR.o obj/models/TVBPRplus.o 
 
 all: train
@@ -54,4 +55,4 @@ train: src/main.cpp $(OBJECTS) $(MODELOBJECTS) Makefile
 	$(CC) $(CFLAGS) -o train src/main.cpp $(OBJECTS) $(MODELOBJECTS) $(LDFLAGS)
 
 clean:
-	rm -rf $(OBJECTS) $(MODELOBJECTS) train
+	rm -rf $(DEL_OBJECTS) $(MODELOBJECTS) train
