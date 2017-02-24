@@ -13,6 +13,44 @@ All the models need the ratings dataset in a simplified format, use the `convert
 python convert_to_simple.py reviews_Clothing_Shoes_and_Jewelry.json.gz reviews_simple.gz
 ```
 
+
+Then there is a script that splits the file into categories. For input it takes the gzipped simplifed output from above and a meta data file which has some category mappings: https://drive.google.com/file/d/0B9Ck8jw-TZUELVRLMVdJNTRUU0U/view?usp=sharing
+
+```
+ ./getClothingSubReviews ../simple_out.gz productMeta_simple.txt
+```
+ 
+ This will generate these segmented review files (which you need to gzip to use in the training program):
+ 
+```
+reviews_Baby.txt
+reviews_Boys.txt
+reviews_Girls.txt
+reviews_Men.txt
+reviews_Women.txt
+```
+
+However, when I train on this data it trains it trips the sanity check on line 51 of model.hpp
+
+```
+//in this case this train binary is build to train a BPR model so the fields that are n/a for BPR are passed in as na args
+./train reviews_Women.txt.gz na 20 na na 10 10 na na 10 "WomenClothing"
+```
+
+```
+{
+  "corpus": "tools/reviews_Women.txt.gz",
+  Loading votes from tools/reviews_Women.txt.gz, userMin = 5, itemMin = 0  ..
+
+  Generating votes data
+  "nUsers": 34086, "nItems": 14016, "nVotes": 171279
+
+
+ Corpus split exception.
+```
+
+It takes the #users down from 39,387 to 34,086 and that seems to result in each user not having at least 3 reviews which is needed for training
+
 ## Build Suite
 
 To build the suite, run the `Makefile`, by typing `make` in the project directory. This will build a binary named `train`.
