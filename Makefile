@@ -53,6 +53,9 @@ gzstream/gzstream.o:
 
 train: src/main.cpp $(OBJECTS) $(MODELOBJECTS) Makefile
 	$(CC) $(CFLAGS) -o train src/main.cpp $(OBJECTS) $(MODELOBJECTS) $(LDFLAGS)
+	
+cv: src/cv.cpp  $(OBJECTS) $(MODELOBJECTS) Makefile
+	$(CC) $(CFLAGS) -o cv src/cv.cpp $(OBJECTS) $(MODELOBJECTS) $(LDFLAGS)
 
 clean:
 	rm -rf $(DEL_OBJECTS) $(MODELOBJECTS) train
