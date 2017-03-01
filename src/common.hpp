@@ -46,6 +46,8 @@ typedef struct epoch
 
 inline double inner(double* x, double* y, int K)
 {
+  //inner product
+  //sum_^N_k x_k*y_k
 	double res = 0;
 	for (int k = 0; k < K; k ++) {
 		res += x[k]*y[k];

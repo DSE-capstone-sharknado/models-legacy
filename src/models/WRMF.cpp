@@ -18,6 +18,9 @@ void WRMF::cleanUp()
 
 double WRMF::prediction(int user, int item)
 {
+  //this is tme same as:
+  //R = dot(X, Y)
+  //return R[user][item] 
 	return dot(X.row(user), Y.row(item));
 }
 

@@ -105,6 +105,7 @@ void model::AUC(double* AUC_val, double* AUC_test, double* std)
 	double* AUC_u_val = new double[nUsers];
 	double* AUC_u_test = new double[nUsers];
 
+  //iterates every user by every item (not in users's rankings)
 	#pragma omp parallel for schedule(dynamic)
 	for (int u = 0; u < nUsers; u ++) {
 		int item_test = test_per_user[u].first;
@@ -237,6 +238,9 @@ void model::saveModel(const char* path)
 
 	fprintf(stderr, "\nModel saved to %s.\n", path);
 }
+
+
+
 
 /// model must be first initialized before calling this function
 void model::loadModel(const char* path)

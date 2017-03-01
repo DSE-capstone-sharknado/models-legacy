@@ -1,32 +1,58 @@
-# Amazon Models Reference Impls.
+# Amazon Dataset RecSys Models
 
-Includes reference implementations for BMR, VBMR and TVBMP (ups and downs).
+Includes reference implementations for:
 
-You can't build this out-of-the-box on a mac unless you have a traditional gcc tool-chain setup. I'm building it w/ a Docker image i've included in this repo. * See Docker note below
+* BMR: https://arxiv.org/pdf/1205.2618.pdf
+* VBMR: https://arxiv.org/pdf/1510.01784.pdf
+* TVBMP: https://arxiv.org/pdf/1602.01585.pdf
+
+recommender systems trained on an Amazon Reviews dataset:
+
+Dataset: http://jmcauley.ucsd.edu/data/amazon/
+
+Original Code: https://sites.google.com/a/eng.ucsd.edu/ruining-he/ ( Ruining He)
+
+## Requirements
+
+Traditional gcc tool-chain setup, i.e. not a mac (LLVM).  * See Docker notes below *
 
 
 ## Preprocessing
 
-All the models need the ratings dataset in a simplified format, use the `convert_to_simple.py` util to do this:
+### Transform
+
+All the models need the reviews dataset in a simplified format (CSV), use the `convert_to_simple.py` util to do this:
 
 ```
 python convert_to_simple.py reviews_Clothing_Shoes_and_Jewelry.json.gz reviews_simple.gz
 ```
 
+It is now possible to train w/ this output file which is all reviews across all categories of clothing. It is often useful to segment across categories: 
 
-## Segmentation
+### Segmentation
 
-It is useful for evaluation to segment the clothing dataset into: women, men, boys, girls and baby using the `getClothingSubReviews` script.
+It is useful for evaluation to segment the clothing dataset into:
 
-For input it takes the gzipped simplified output from above and a meta data file which has some category mappings: https://drive.google.com/file/d/0B9Ck8jw-TZUELVRLMVdJNTRUU0U/view?usp=sharing
+* women
+* men
+* boys
+* girls
+* baby 
+
+using the `getClothingSubReviews` script.
+
+For input it takes the gzipped simplified output from above and a meta data file which has some category mappings:
+
+ https://storage.googleapis.com/sharknado-recsys-public/productMeta_simple.txt.gz
+
+The command takes the simplified dataset file and the metadata as input:
 
 ```
- ./getClothingSubReviews ../clothing_5core.gz productMeta_simple.txt
  ./getClothingSubReviews ../data/clothing_full.gz ../data/productMeta_simple.txt
 ```
- 
+
  This will generate these segmented review files (which you need to gzip to use in the training program):
- 
+
 ```
 reviews_Baby.txt
 reviews_Boys.txt
@@ -35,7 +61,7 @@ reviews_Men.txt
 reviews_Women.txt
 ```
 
-I can't seem to get this to work on 5-core as I get a sanity check error when I train.
+
 
 ## Build Suite
 
@@ -44,16 +70,26 @@ To build the suite, run the `Makefile`, by typing `make` in the project director
 
 ### Training
 
-To train the BMR model, pass in the following args:
+To train all the models, pass in the following args:
 
-* processed reviews file path
-* K latent factors
-* regulation coreff 1
-* regulation coreff 2
-* max SGD iterations constant
+1. Review file path — the simplified dataset
+2. Img feature path — the image features
+3. Latent Feature Dim. (K) — hyperparameter
+4. Visual Feature Dim. (K') — hyperparameter
+5. alpha (for WRMF only) — hyperparameter
+6. biasReg (regularizer for bias terms) — hyperparameter
+7. lambda  (regularizer for general terms) — hyperparameter
+8. lambda2 (regularizer for \"sparse\" terms) — hyper-parameter
+9. Epochs (number of epochs)
+10. Max iterations
+11. Corpus/Category name under \"Clothing Shoes & Jewelry\" (e.g. Women)
+
+Although some parameters don't apply to some of the models, they are just passed in bulk.
+
+To start the training routine:
 
 ```
-./train simple_out.gz simple_out.gz 20 k2 alpha 10 10 lambda2 epoch 10 "Clothing"
+./train simple_out.gz image_feat.gz 20 k2 alpha 10 10 lambda2 epoch 10 "Clothing/women"
 ```
 
 Example Output:
@@ -90,6 +126,10 @@ Iter: 10, took 0.234738
 Model saved to Clothing__BPR-MF__K_20_lambda_10.00_biasReg_10.00.txt.
 }
 ```
+
+### Computational Note
+
+The training routine heavy make use of threading. In experimentation we have been able to utilize 15 cores during training. This is especially important during the expensive AUC caluclation.
 
 ##Docker
 
