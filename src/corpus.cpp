@@ -92,6 +92,7 @@ void corpus::loadVotes(const char* imgFeatPath, const char* voteFile, int userMi
 	while (getline(in2, line)) {
 		stringstream ss(line);
 		ss >> uName >> bName >> value >> voteTime;
+    // reviewer_id, asin, overall, time, text
 
 		nRead++;
 		if (nRead % 100000 == 0) {
@@ -103,9 +104,9 @@ void corpus::loadVotes(const char* imgFeatPath, const char* voteFile, int userMi
     //   continue;
     // }
     //
-    // if (uCounts[uName] < userMin or bCounts[bName] < itemMin) {
-    //   continue;
-    // }
+    if (uCounts[uName] < userMin or bCounts[bName] < itemMin) {
+      continue;
+    }
 
 		// new item
 		if (itemIds.find(bName) == itemIds.end()) {
@@ -122,6 +123,8 @@ void corpus::loadVotes(const char* imgFeatPath, const char* voteFile, int userMi
 
 		ratingPerItem[itemIds[bName]].push_back(value);
 
+    // this is a diction of u,i pairs w/ a value of time
+    //(u,i)=>time
 		voteMap[make_pair(userIds[uName], itemIds[bName])] = voteTime;	
 	}
 	in2.close();
