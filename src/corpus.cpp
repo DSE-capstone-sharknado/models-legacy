@@ -6,11 +6,11 @@ void corpus::loadData(const char* voteFile, const char* imgFeatPath, int userMin
 	nUsers = 0;
 	nVotes = 0;
 
-  // imFeatureDim = 4096;
+  imFeatureDim = 4096;
 
 	/// Note that order matters here
 	loadVotes(imgFeatPath, voteFile, userMin, itemMin);	
-	//loadImgFeatures(imgFeatPath); 
+  loadImgFeatures(imgFeatPath);
 	
 	fprintf(stderr, "\n  \"nUsers\": %d, \"nItems\": %d, \"nVotes\": %d\n", nUsers, nItems, nVotes);
 }
@@ -55,9 +55,9 @@ void corpus::loadVotes(const char* imgFeatPath, const char* voteFile, int userMi
 			fflush(stderr);
 		}
 
-    // if (imgAsins.find(bName) == imgAsins.end()) {
-    //   continue;
-    // }
+    if (imgAsins.find(bName) == imgAsins.end()) {
+      continue;
+    }
 
 		if (value > 5 or value < 0) { // Ratings should be in the range [0,5]
 			printf("Got bad value of %f\nOther fields were %s %s %lld\n", value, uName.c_str(), bName.c_str(), voteTime);
@@ -100,10 +100,10 @@ void corpus::loadVotes(const char* imgFeatPath, const char* voteFile, int userMi
 			fflush(stderr);
 		}
 
-    // if (imgAsins.find(bName) == imgAsins.end()) {
-    //   continue;
-    // }
-    //
+    if (imgAsins.find(bName) == imgAsins.end()) {
+      continue;
+    }
+
     if (uCounts[uName] < userMin or bCounts[bName] < itemMin) {
       continue;
     }
@@ -162,5 +162,65 @@ void corpus::generateVotes(map<pair<int, int>, long long>& voteMap)
 	nVotes = V.size();
 	random_shuffle(V.begin(), V.end());
 }
+
+void corpus::loadImgFeatures(const char* imgFeatPath)
+{
+  for (int i = 0; i < nItems; i ++) {
+    vector<pair<int, float> > vec;
+    imageFeatures.push_back(vec);
+  }
+
+  FILE* f = fopen_(imgFeatPath, "rb");
+  fprintf(stderr, "\n  Loading image features from %s  ", imgFeatPath);
+
+  float ma = 58.388599; // Largest feature observed
+
+  float* feat = new float [imFeatureDim];
+  char* asin = new char [11];
+  asin[10] = '\0';
+  int a;
+  int counter = 0;
+  while (!feof(f)) {
+    if ((a = fread(asin, sizeof(*asin), 10, f)) != 10) {
+      //printf("Expected to read %d chars, got %d\n", 10, a);
+      continue;
+    }
+        // trim right space
+        string sAsin(asin);
+        size_t found = sAsin.find(" ");
+        if (found != string::npos) {
+            sAsin = sAsin.substr(0, found);
+        }
+
+    if ((a = fread(feat, sizeof(*feat), imFeatureDim, f)) != imFeatureDim) {
+      printf("Expected to read %d floats, got %d\n", imFeatureDim, a);
+      exit(1);
+    }
+
+    if (itemIds.find(sAsin) == itemIds.end()) {
+      continue;
+    }
+
+    vector<pair<int, float> > &vec = imageFeatures.at(itemIds[sAsin]);
+    for (int f = 0; f < imFeatureDim; f ++) {
+      if (feat[f] != 0) {  // compression
+        vec.push_back(std::make_pair(f, feat[f]/ma));
+      }
+    }
+
+    // print process
+    counter ++;
+    if (not (counter % 10000)) {
+      fprintf(stderr, ".");
+      fflush(stderr);
+    }
+  }
+  fprintf(stderr, "\n");
+
+  delete [] asin;
+  delete [] feat;
+  fclose(f);
+}
+
 
 

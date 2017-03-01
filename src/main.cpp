@@ -112,12 +112,12 @@ int main(int argc, char** argv)
 	corpus corp;
 	corp.loadData(reviewPath, imgFeatPath, 5, 0);
 
-	// go_POP(&corp);
+  go_POP(&corp);
 	// go_WRMF(&corp, K, alpha, lambda, iter, corp_name);
   go_BPRMF(&corp, K, lambda, biasReg, iter, corp_name);
 	// go_BPRTMF(&corp, K, lambda, biasReg, nEpoch, iter, corp_name);
 	
-	// go_VBPR(&corp, K, K2, lambda, lambda2, biasReg, iter, corp_name);
+  go_VBPR(&corp, K, K2, lambda, lambda2, biasReg, iter, corp_name);
 	// go_TVBPR(&corp, K, K2, lambda, lambda2, biasReg, nEpoch, iter, corp_name);
   // go_TVBPRplus(&corp, K, K2, lambda, lambda2, biasReg, nEpoch, iter, corp_name);
 
