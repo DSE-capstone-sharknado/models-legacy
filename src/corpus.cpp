@@ -35,7 +35,6 @@ void corpus::loadVotes(const char* imgFeatPath, const char* voteFile, int userMi
   int a;
   int counter = 0;
   while (!feof(f)) {
-    fprintf(stderr, "*");
     
     if ((a = fread(asin, sizeof(*asin), 10, f)) != 10) { // last line might be empty
       continue;
