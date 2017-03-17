@@ -25,6 +25,56 @@ void corpus::cleanUp()
 void corpus::loadVotes(const char* imgFeatPath, const char* voteFile, int userMin, int itemMin)
 {
 
+  //image part
+  FILE* f = fopen_(imgFeatPath, "rb");
+  fprintf(stderr, "\n  Pre-loading image asins from %s  ", imgFeatPath);
+
+  float* feat = new float [imFeatureDim];
+  char* asin = new char [11];
+  asin[10] = '\0';
+  int a;
+  int counter = 0;
+  while (!feof(f)) {
+    fprintf(stderr, "*");
+    
+    if ((a = fread(asin, sizeof(*asin), 10, f)) != 10) { // last line might be empty
+      continue;
+    }
+    
+    
+    
+    // trim right space
+    string sAsin(asin);
+    size_t found = sAsin.find(" ");
+    if (found != string::npos) {
+        sAsin = sAsin.substr(0, found);
+    }
+
+    for (unsigned c = 0; c < sAsin.size(); c ++) {
+      if (not isascii(asin[c])) {
+        printf("Expected asin to be 10-digit ascii\n");
+        exit(1);
+      }
+    }
+    if (not (counter % 10000)) {
+      fprintf(stderr, ".");
+      fflush(stderr);
+    }
+
+    if ((a = fread(feat, sizeof(*feat), imFeatureDim, f)) != imFeatureDim) {
+      printf("Expected to read %d floats, got %d\n", imFeatureDim, a);
+      exit(1);
+    }
+    imgAsins[sAsin] = 1;
+    counter ++;
+  }
+  fprintf(stderr, "\n");
+
+  delete[] asin;
+  delete [] feat;
+  fclose(f);
+  
+  //end image part
 
 	fprintf(stderr, "  Loading votes from %s, userMin = %d, itemMin = %d  ", voteFile, userMin, itemMin);
 
@@ -192,6 +242,7 @@ void corpus::loadImgFeatures(const char* imgFeatPath)
             sAsin = sAsin.substr(0, found);
         }
 
+    //read 4096 float-sized bytes
     if ((a = fread(feat, sizeof(*feat), imFeatureDim, f)) != imFeatureDim) {
       printf("Expected to read %d floats, got %d\n", imFeatureDim, a);
       exit(1);
