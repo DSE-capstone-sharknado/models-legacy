@@ -129,7 +129,7 @@ Model saved to Clothing__BPR-MF__K_20_lambda_10.00_biasReg_10.00.txt.
 
 ### Computational Note
 
-The training routine heavy make use of threading. In experimentation we have been able to utilize 15 cores during training. This is especially important during the expensive AUC caluclation.
+The training routine heavy make use of threading. In experimentation we have been able to utilize 15 cores during training. This is especially important during the expensive AUC calculation.
 
 ##Docker
 
@@ -147,3 +147,14 @@ the `v` flag will mount the source repot to `/mnt/mac` in the container.
 ### BPR
 
 On Amazon, regularization hyper-parameter lambda=10 works the best for BPR-MF, MM-MF and VBPR in most cases. 
+
+
+### VBPR
+
+```
+../tools/getClothingSubImgFeatures _image_features_Clothing_Shoes_and_Jewelry.b productMeta_simple.txt.gz
+```
+
+```
+./train data/reviews_Women.txt data/image_features_Women.b 10 10 na 1 1 1 na 10 "women"
+```
