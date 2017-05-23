@@ -16,6 +16,9 @@ Original Code: https://sites.google.com/a/eng.ucsd.edu/ruining-he/ ( Ruining He)
 
 Traditional gcc tool-chain setup, i.e. not a mac (LLVM).  * See Docker notes below *
 
+* compiler support for openmp (ubuntu: `sudo apt install libomp-dev`)
+* armidillo lib (ubuntu: `sudo apt-get install libarmadillo-dev`)
+
 
 ## Preprocessing
 
